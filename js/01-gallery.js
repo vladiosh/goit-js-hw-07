@@ -7,6 +7,7 @@ const galleryContainerRef = document.querySelector(".gallery");
 const imageMarkup = createImageMarkup(galleryItems);
 
 galleryContainerRef.insertAdjacentHTML("beforeend", imageMarkup);
+galleryContainerRef.addEventListener("click", onImageClick);
 
 function createImageMarkup(items) {
   return items
@@ -22,4 +23,20 @@ function createImageMarkup(items) {
     .join("");
 }
 
-console.log(imageMarkup);
+function onImageClick(evt) {
+  evt.preventDefault();
+
+  const isImageEl = evt.target.classList.contains("gallery__image");
+
+  if (!isImageEl) {
+    return;
+  }
+  console.log(evt.target);
+
+  const galleryOriginalImage = evt.target.dataset.source;
+  const instance = basicLightbox.create(
+    `<img src="${galleryOriginalImage}" width="800" height="600">`
+  );
+
+  instance.show();
+}
