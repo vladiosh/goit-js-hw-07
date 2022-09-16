@@ -1,13 +1,13 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-// console.log(galleryItems);
-
 const galleryContainerRef = document.querySelector(".gallery");
 const imageMarkup = createImageMarkup(galleryItems);
 
 galleryContainerRef.insertAdjacentHTML("beforeend", imageMarkup);
 galleryContainerRef.addEventListener("click", onImageClick);
+
+let instance = "";
 
 function createImageMarkup(items) {
   return items
@@ -27,16 +27,29 @@ function onImageClick(evt) {
   evt.preventDefault();
 
   const isImageEl = evt.target.classList.contains("gallery__image");
-
   if (!isImageEl) {
     return;
   }
   console.log(evt.target);
 
-  const galleryOriginalImage = evt.target.dataset.source;
-  const instance = basicLightbox.create(
-    `<img src="${galleryOriginalImage}" width="800" height="600">`
-  );
+  galleryContainerRef.addEventListener("keydown", onCloseModal);
+
+  onOpenModal(evt);
+  onCloseModal(evt);
+}
+
+function onOpenModal(evt) {
+  instance = basicLightbox.create(`
+	    <img src="${evt.target.dataset.source}" width="800" height="600">
+	`);
 
   instance.show();
+}
+
+function onCloseModal(evt) {
+  if (evt.code === "Escape") {
+    console.log(evt.code);
+    instance.close();
+    galleryContainerRef.removeEventListener("keydown", onCloseModal);
+  }
 }
